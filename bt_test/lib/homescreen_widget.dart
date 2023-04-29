@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+// import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:developer';
 
 class HomeScreen extends StatefulWidget {
@@ -15,9 +16,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  FlutterBlue flutterBlue = FlutterBlue.instance;
+  FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
   List<ScanResult> scanResultList = [];
   bool _isScanning = false;
+
+  final bool _setContinuousScanning = true;
 
   @override
   void initState() {
@@ -30,6 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void initBle() {
     log('initBle() entry', name: 'initBle');
+
+    // var a = flutterBlue.isAvailable();
+
     flutterBlue.isScanning.listen((isScanning) {
       log('_isScanning: $_isScanning => $isScanning', name: 'initBle');
       _isScanning = isScanning;
@@ -61,6 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
       flutterBlue.startScan(timeout: const Duration(seconds: 4));
 
       flutterBlue.scanResults.listen((results) {
+        log('scanResultList: $scanResultList', name: 'homescreen.scan');
+
+        for (ScanResult r in results) {
+          log('${r.device.name} : ${r.rssi}');
+        }
+
         scanResultList = results;
 
         setState(() {});
